@@ -58,10 +58,13 @@ const defaultArticles = [article1, article2, article3, article4];
 ///////////////////////////// Requests targeting all articles /////////////////////////////
 
 app.route("/articles")
+    // Serve up all the articles available
     .get(
         (req, res) => {
             Article.find({})
+                // If article found
                 .then((foundArticles) => {
+                    // If returned array is not empty
                     if (foundArticles.length !== 0) {
                         console.log(foundArticles);
                         res.send(foundArticles);
@@ -73,12 +76,15 @@ app.route("/articles")
                             });
                     }
                 })
+                // If there are any errors send that error
                 .catch((err) => {
                     res.send(err);
                 });
         })
+    // Get a new article
     .post((req, res) => {
 
+        // Create a new article using that data and save
         const newArticle = new Article({
             title: req.body.title,
             content: req.body.content
@@ -88,6 +94,7 @@ app.route("/articles")
             .then(() => res.send("Successfully save the new article."))
             .catch((err) => res.send(err));
     })
+    // Delete all the articles available
     .delete((req, res) => {
 
         Article.deleteMany()
@@ -99,6 +106,7 @@ app.route("/articles")
 ///////////////////////////// Requests targeting a specific article /////////////////////////////
 
 app.route("/articles/:articleTitle")
+    // Get an article from the title
     .get(
         (req, res) => {
             // Get article name from url parameter
@@ -114,6 +122,7 @@ app.route("/articles/:articleTitle")
                     res.send(err);
                 });
         })
+    // Change an article using title and update the title and the content
     .put(
         (req, res) => {
             Article.findOneAndUpdate({ title: req.params.articleTitle }, { title: req.body.title, content: req.body.content })
@@ -126,6 +135,7 @@ app.route("/articles/:articleTitle")
                 })
                 .catch((err) => res.send(err));
         })
+    // Change an article using title whatever parameter user sent 
     .patch((req, res) => {
         Article.findOneAndUpdate({ title: req.params.articleTitle }, { $set: req.body }) // update only the send keys
             .then((article) => {
@@ -137,6 +147,7 @@ app.route("/articles/:articleTitle")
             })
             .catch((err) => res.send(err));
     })
+    // Delete selected article
     .delete((req, res) => {
         Article.deleteOne({ title: req.params.articleTitle })
             .then((article) => {
