@@ -12,13 +12,16 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(express.static("public"));
 
+// Database connection
 mongoose.connect("mongodb://127.0.0.1:27017/wikiDB");
 
+// Create a model for the table
 const articleSchema = mongoose.Schema({
     title: String,
     content: String
 });
 
+// Create a table using model
 const Article = new mongoose.model("Article", articleSchema);
 
 // Default articles to add when program run for the first time
